@@ -1,0 +1,28 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: lightblue;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.blue-text{
+  color: blue
+}
+
+.comment {
+  border: 2px solid black;
+  padding: 20px;
+  line-height: 1.5;
+}
+
+.date {
+  font-size: 80%;
+  text-align: right;
+}
+
+.author {
+  font-size: 110%;
+}

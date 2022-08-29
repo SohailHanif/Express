@@ -1,0 +1,21 @@
+extends layout 
+
+block content
+    //- Loop through and display errors
+    if errors
+        each error in errors 
+            p(style="color:red") #{error.msg}
+
+    h1 Login
+    //- Create form for user login and post to express route
+    form(method="POST", action="/users/login")
+        //- Create input elements based on user model
+        #form-group 
+            label Email:
+            input.form-control(name="email", type="text")
+    
+        #form-group 
+            label Password:
+            input.form-control(name="password", type="password")
+
+        input.btn.btn-primary(type="submit", value="Submit")

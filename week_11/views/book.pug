@@ -1,0 +1,23 @@
+extends layout 
+
+block content 
+    h1= book.title 
+    h5 Written by #{book.author}
+    h5 Posted by: #{posted_by}
+    p Rating: #{book.rating}
+    p Pages: #{book.pages}
+    label Genres:
+    ul
+    each genre in book.genres
+        li #{genre}
+
+    hr
+    //- //- If user logged in
+    //- if user
+    //-     //- Hide edit and delete unless book was posted by current user
+    //-     if user._id == book.posted_by
+    //-         //- Link to edit book
+    a.btn.btn-default(href="/book/edit/" + book._id) Edit Book
+    br
+    //- Link to delete book
+    a.btn.delete-book(href="#", data-id=book._id) Delete Book

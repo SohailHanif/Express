@@ -1,0 +1,30 @@
+//- Extend from base layout
+extends layout
+
+//- Override content block with custom content
+block content
+
+    h1 For/Each Loops
+    //- Generate list elements
+    ul
+    each x in [1, 2, 3, 4, 5]
+        li Item #{x}
+
+    //- Print with index
+    each n, i in [10, 21, 13, 42, 5]
+        p= `Index ${i} Value ${n}`
+
+    br 
+
+    h3 Places visited 
+    each place in places
+        li= place
+
+    br
+    h3 Grades
+    //- For loop over Javascript object
+    //- Else runs if grades are empty
+    for grade, course in grades
+      p #{course} #{grade}%
+    else
+      strong No grades

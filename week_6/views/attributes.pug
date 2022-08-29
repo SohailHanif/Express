@@ -1,0 +1,30 @@
+//- Extend from base layout
+extends layout
+
+//- Override content block with custom content
+block content
+    //- Heading with id 
+    h2#headingId
+
+    //- Paragraph with class blue-text
+    p.blue-text This text is blue
+    
+    //- Specifying class without element type
+    //- defaults to div
+    .displayBox
+    //- Id without element also defaults div
+    #divWithId
+    
+    //- Javascript object to populate class
+    - const myClasses = ["class1", "class2", "class3"]
+    .myDiv(class=myClasses)
+
+    //- Javascript objects to populate style
+    - const myStyles = {"color": "white", "background-color": "blue"}
+    #div-with-color(style=myStyles)
+        p(style={"text-align": "center"}) Paragraph inside div
+    |
+    |
+    - const myAttributes = {"src": `${img_url}`, "alt": "No image"}
+    //- & said as “and attributes”
+    img&attributes(myAttributes)

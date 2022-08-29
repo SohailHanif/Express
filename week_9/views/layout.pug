@@ -1,0 +1,24 @@
+//- Defines doctype
+doctype html
+//- Defines top level html
+html
+  //- Start head
+  head
+    //- Define title and import stypesheet
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  
+  //- Use include for partial template
+  include partials/navbar
+  br
+
+  //- Block to be overriden when inherited
+  body
+    block content
+  br
+  br
+
+//- Import JQuery and main.js
+script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js")
+script(type='text/javascript', src="/js/main.js")
+

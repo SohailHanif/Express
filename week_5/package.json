@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "concurrently": "^7.3.0",
+    "create-react-app": "^5.0.1",
+    "express": "^4.18.1",
+    "multer": "^1.4.5-lts.1"
+  },
+  "scripts": {
+    "client-install": "cd client && npm install",
+    "start": "node index.js",
+    "server": "nodemon --inspect index.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently 'npm run server' 'npm run client'"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}

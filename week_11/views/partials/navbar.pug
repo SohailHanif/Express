@@ -1,0 +1,12 @@
+nav
+    a(href="/") Home
+    br
+    if user
+        a(href="/book/add") Add book
+        br
+        a(href="/users/logout") Logout 
+    else
+        a(href="/users/register") Register 
+        br
+        a(href="/users/login") Login 
+    br

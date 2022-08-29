@@ -1,0 +1,11 @@
+//- Conditionals for User login
+if loggedIn
+    p User is logged in
+else if lastLogin < 60
+    p Your last login was #{lastLogin} minutes ago.
+    br
+    a(href="/login") Login again
+else
+    strong Not logged in
+    br
+    a(href="/login") Login

@@ -1,0 +1,36 @@
+extends layout 
+
+block content
+    //- Loop through and display errors
+    if errors
+        each error in errors 
+            p(style="color:red") #{error.msg}
+
+    h1 Add Book
+    //- Create form for book and post to express route
+    form(method="POST", action="/book/add")
+        //- Create input elements based on book model
+        #form-group 
+            label Title:
+            input.form-control(name="title", type="text")
+
+        #form-group 
+            label Author:
+            input.form-control(name="author", type="text")
+    
+        #form-group 
+            label Pages:
+            input.form-control(name="pages", type="number")
+
+        #form-group 
+            label Genres:
+            //- Loop through genres to assign values to checkboxes
+            for genre in genres
+                input.form-control(name="genres", type="checkbox" value=genre)
+                label= genre
+                
+        #form-group 
+            label Rating:
+            input.form-control(name="rating", type="number")
+        
+        input.btn.btn-primary(type="submit", value="Submit")

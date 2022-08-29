@@ -1,0 +1,23 @@
+extends layout
+
+block content
+    if user
+        h3 Welcome back #{user.name}!
+    h1 Bookstore
+    //- Loop through all books
+    each book in books 
+        //- Display title, author, pages, rating
+        label Title:
+        //- Link to book with id
+        a(href="/book/" + book._id) #{book.title}
+        p Author: #{book.author}
+        p Pages: #{book.pages}
+        p Rating: #{book.rating}
+        p Genres:
+        ul
+        //- Loop through genres and print as list
+        each genre in book.genres
+            li #{genre}
+
+        br
+        br

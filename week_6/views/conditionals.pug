@@ -1,0 +1,18 @@
+//- Extend from base layout
+extends layout
+
+//- Override content block with custom content
+block content
+
+    - const orderStatuses = ["Pending", "Transit", "Completed", "Other"]
+    - const orderStatus = orderStatuses[Math.floor(Math.random()*orderStatuses.length)];
+
+    case orderStatus 
+        when "Pending"
+            p Your order is pending
+        when "Transit"
+            p Your order is in transit
+        when "Completed"
+            p Your order has be delivered 
+        default 
+            p Sorry, an error occured

@@ -1,0 +1,31 @@
+//- Extend from base layout
+extends layout
+
+//- Override content block with custom content
+block content
+  //- h1 title using variable
+  h1= title
+  p Welcome #{name}
+  //- Can use js in #{}
+  p 1 + 1 = #{1 + 1}
+
+  //- Multi-line paragraph
+  p. 
+    This is multi-line text
+    this is the new line  
+  //- Lists
+  ul
+    li Item 1
+    li Item 2
+    li Item 3
+
+  //- Image and link from variable
+  img(src=img_url)
+  //- | Whitespace formatting
+  |
+  |
+  br
+  |
+  |
+  a(href=img_url) Picsum random image
+  br

@@ -1,0 +1,20 @@
+//- Extend from base layout
+extends layout
+
+//- Override content block with custom content
+block content
+
+    //- Inputs using attributes
+    label Email
+    input(
+        type="text"
+        disabled=true
+    )
+    br
+    label(style={"color": "red"}) Password
+    input(
+        type="password" 
+        name="password_input"
+    )
+    br
+    input(type="submit") 

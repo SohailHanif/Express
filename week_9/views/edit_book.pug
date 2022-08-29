@@ -1,0 +1,36 @@
+extends layout 
+
+block content 
+    h1= book.title 
+    form(method="POST" action="/book/edit/" + book._id)
+        #form-group 
+            label Title:
+            input.form-control(name="title" type="text" value=book.title)
+
+        #form-group 
+            label Author:
+            input.form-control(name="author" type="text" value=book.author)
+
+        #form-group 
+            label Pages:
+            input.form-control(name="pages" type="number" value=book.pages)
+
+        #form-group 
+            label Genres:
+            //- Loop through genres to assign values to checkboxes
+            for genre in genres
+                //- Check if book genres has value of genre to assign checked
+                if book.genres.includes(genre)
+                    input.form-control(name="genres" type="checkbox" value=genre checked=true)
+                else
+                    input.form-control(name="genres" type="checkbox" value=genre)
+                
+                label= genre
+
+        #form-group 
+            label Rating:
+            input.form-control(name="rating" type="number" value=book.rating)
+
+        br
+        input.btn.btn-primary(type="submit" value="Submit")
+
