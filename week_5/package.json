@@ -10,7 +10,9 @@
     "start": "node index.js",
     "server": "nodemon --inspect index.js",
     "client": "npm start --prefix client",
-    "dev": "concurrently 'npm run server' 'npm run client'"
+    "dev": "concurrently 'npm run server' 'npm run client'",
+    "dev-windows": "concurrently 'nodemon --inspect index.js' 'npm start --prefix client'"
+
   },
   "devDependencies": {
     "nodemon": "^2.0.19"
