@@ -143,9 +143,9 @@ router
 
     let query = { _id: req.params.id };
 
-    Book.findById(req.params.id, function (err, book) {
+    Book.findById(req.params.id, function (err, book_db) {
       // Restrict to only allowing user that posted to make updates
-      if (book.posted_by != req.user._id) {
+      if (book_db.posted_by != req.user._id) {
         res.redirect("/");
       } else {
         // Update book in MongoDB
