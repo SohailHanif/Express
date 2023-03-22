@@ -27,8 +27,8 @@ router
     res.render("add_book", {
       genres: genres,
     });
-    // Post method accepts form submission and saves book in MongoDB
   })
+  // Post method accepts form submission and saves book in MongoDB
   .post(ensureAuthenticated, async (req, res) => {
     // Async validation check of form elements
     await check("title", "Title is required").notEmpty().run(req);
@@ -52,16 +52,14 @@ router
       book.posted_by = req.user.id;
 
       // Save book to MongoDB
-      book.save(function (err) {
-        if (err) {
-          // Log error if failed
-          console.log(err);
-          return;
-        } else {
-          // Route to home to view books if suceeeded
-          res.redirect("/");
-        }
-      });
+      let result =  await book.save()
+      if (!result) {
+        // Log error if failed
+        res.send("Could not save book")
+      } else {
+        // Route to home to view books if suceeeded
+        res.redirect("/");
+      }
     } else {
       res.render("add_book", {
         // Render form with errors
@@ -74,22 +72,25 @@ router
 // Route that returns and deletes book based on id
 router
   .route("/:id")
-  .get((req, res) => {
+  .get(async (req, res) => {
     // Get book by id from MongoDB
     // Get user name by id from DB
-    Book.findById(req.params.id, function (err, book) {
-      User.findById(book.posted_by, function (err, user) {
-        if (err) {
-          console.log(err);
-        }
+    let book = await Book.findById(req.params.id)
+    console.log(book)
+    if(!book){
+      res.send("Could not find book")
+    }
+    let user = User.findById(book.posted_by)
+    if (!user) {
+      res.send("Could not find user")
+    } else {
         res.render("book", {
           book: book,
           posted_by: user.name,
         });
-      });
-    });
-  })
-  .delete((req, res) => {
+      };
+    })
+  .delete(async (req, res) => {
     // Restrict delete if user not logged in
     if (!req.user._id) {
       res.status(500).send();
@@ -98,28 +99,33 @@ router
     // Create query dict
     let query = { _id: req.params.id };
 
-    Book.findById(req.params.id, function (err, book) {
-      // Restrict delete if user did not post book
-      if (book.posted_by != req.user._id) {
+    let book = await Book.findById(req.params.id)
+    if(!book){
+      res.send("Could not find book")
+    }
+    // Restrict delete if user did not post book
+    if (book.posted_by != req.user._id) {
+      res.status(500).send();
+    } else {
+      // MongoDB delete with Mongoose schema deleteOne
+      let result = Book.deleteOne(query, function (err) {
+      if (!result) {
         res.status(500).send();
-      } else {
-        // MongoDB delete with Mongoose schema deleteOne
-        Book.deleteOne(query, function (err) {
-          if (err) {
-            console.log(err);
-          }
-          res.send("Successfully Deleted");
-        });
       }
+      res.send("Successfully Deleted");
+      });
+    }
     });
-  });
 
-// Route that return form to edit book
+    // Route that return form to edit book
 router
   .route("/edit/:id")
-  .get(ensureAuthenticated, (req, res) => {
+  .get(ensureAuthenticated, async (req, res) => {
     // Get book by id from MongoDB
-    Book.findById(req.params.id, function (err, book) {
+    let book = await Book.findById(req.params.id)
+      if(!book){
+        res.send("Could not find book")
+      }
       // Restrict to only allowing user that posted to make updates
       if (book.posted_by != req.user._id) {
         res.redirect("/");
@@ -128,9 +134,8 @@ router
         book: book,
         genres: genres,
       });
-    });
-  })
-  .post(ensureAuthenticated, (req, res) => {
+    })
+  .post(ensureAuthenticated, async (req, res) => {
     // Create dict to hold book values
     let book = {};
 
@@ -143,23 +148,24 @@ router
 
     let query = { _id: req.params.id };
 
-    Book.findById(req.params.id, function (err, book_db) {
-      // Restrict to only allowing user that posted to make updates
-      if (book_db.posted_by != req.user._id) {
-        res.redirect("/");
-      } else {
-        // Update book in MongoDB
-        Book.updateOne(query, book, function (err) {
-          if (err) {
-            console.log(err);
-            return;
-          } else {
-            res.redirect("/");
-          }
-        });
-      }
-    });
-  });
+    let book_db = await Book.findById(req.params.id)
+    if(!book_db){
+      res.send("Could not find book")
+    }
+    console.log(book_db)
+    // Restrict to only allowing user that posted to make updates
+    if (book_db.posted_by != req.user._id) {
+      res.send("Only user who posted book can edit")
+    } else {
+      // Update book in MongoDB
+      let result = await Book.updateOne(query, book)
+        if (!result) {
+          res.send("Could not update book")
+        } else {
+          res.redirect("/");
+        }
+    }
+  })
 
 // Function to protect routes from unauthenticated users
 function ensureAuthenticated(req, res, next) {
