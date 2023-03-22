@@ -7,34 +7,30 @@ module.exports = function (passport) {
   // Local Strategy
   passport.use(
     // Create local strategy with email as username
-    new LocalStrategy({ usernameField: "email" }, function (
+    new LocalStrategy({ usernameField: "email" }, async function (
       email,
       password,
       done
     ) {
       // Use email to query user
       let query = { email: email };
-      User.findOne(query, function (err, user) {
+      let user = await User.findOne(query)
+      // If user is not found
+      if (!user) {
+        return done(null, false, { message: "User not found" });
+      }
+      // Verify hashed password
+      bcrypt.compare(password, user.password, function (err, isMatch) {
         if (err) {
           console.log(err);
         }
-        // If user is not found
-        if (!user) {
-          return done(null, false, { message: "User not found" });
+        // If hashed passwords match
+        if (isMatch) {
+          // Login succeeded
+          return done(null, user);
+        } else {
+          return done(null, false, { message: "Invalid credentials" });
         }
-        // Verify hashed password
-        bcrypt.compare(password, user.password, function (err, isMatch) {
-          if (err) {
-            console.log(err);
-          }
-          // If hashed passwords match
-          if (isMatch) {
-            // Login succeeded
-            return done(null, user);
-          } else {
-            return done(null, false, { message: "Invalid credentials" });
-          }
-        });
       });
     })
   );
