@@ -69,19 +69,16 @@ app.get("*", function(req, res, next){
 app.use("/users", user_routes);
 app.use("/book", book_routes);
 
-app.use("/", function (req, res) {
-  // Query MongoDB for books
-  Book.find({}, function (err, books) {
-    // Catch error
-    if (err) {
-      console.log("error");
+app.use("/", async function (req, res) {
+  let books = await Book.find({})
+    if (!books) {
+      res.send("No books found")
     } else {
       // Pass books to index
       res.render("index", {
         books: books,
       });
     }
-  });
 });
 
 // Set constant for port

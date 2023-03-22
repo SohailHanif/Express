@@ -49,16 +49,14 @@ router
       book.rating = req.body.rating;
 
       // Save book to MongoDB
-      book.save(function (err) {
-        if (err) {
-          // Log error if failed
-          console.log(err);
-          return;
-        } else {
-          // Route to home to view books if suceeeded
-          res.redirect("/");
-        }
-      });
+      let result =  await book.save()
+      if (!result) {
+        // Log error if failed
+        res.send("Could not save book")
+      } else {
+        // Route to home to view books if suceeeded
+        res.redirect("/");
+      }
     } else {
       res.render("add_book", {
         // Render form with errors
@@ -71,38 +69,48 @@ router
 // Route that returns and deletes book based on id
 router
   .route("/:id")
-  .get((req, res) => {
+  .get(async (req, res) => {
     // Get book by id from MongoDB
-    Book.findById(req.params.id, function (err, book) {
-      res.render("book", { book });
-    });
+    let book = await Book.findById(req.params.id)
+    console.log(book)
+    if(!book){
+      res.send("Could not find book")
+    }
+    res.render("book", { book });
   })
-  .delete((req, res) => {
+  .delete(async (req, res) => {
     // Create query dict
     let query = { _id: req.params.id };
 
-    // MongoDB delete with Mongoose schema deleteOne
-    Book.deleteOne(query, function (err) {
-      if (err) {
-        console.log(err);
+    let book = await Book.findById(req.params.id)
+    if(!book){
+      res.send("Could not find book")
+    }
+    let result = Book.deleteOne(query, function (err) {
+      if (!result) {
+        res.status(500).send();
+      } else {
+        res.send("Successfully Deleted");
       }
-      res.send("Successfully Deleted");
-    });
+    }) 
   });
 
 // Route that return form to edit book
 router
   .route("/edit/:id")
-  .get((req, res) => {
+  .get(async (req, res) => {
     // Get book by id from MongoDB
-    Book.findById(req.params.id, function (err, book) {
+    let book = await Book.findById(req.params.id)
+    if(!book){
+      res.send("Could not find book")
+    } else {
       res.render("edit_book", {
         book: book,
         genres: genres,
       });
-    });
+    }
   })
-  .post((req, res) => {
+  .post(async (req, res) => {
     // Create dict to hold book values
     let book = {};
 
@@ -117,14 +125,18 @@ router
     console.log(query);
 
     // Update book in MongoDB
-    Book.updateOne(query, book, function (err) {
-      if (err) {
-        console.log(err);
-        return;
-      } else {
-        res.redirect("/");
-      }
-    });
-  });
+    let book_db = await Book.findById(req.params.id)
+    if(!book_db){
+      res.send("Could not find book")
+    } else {
+      // Update book in MongoDB
+      let result = await Book.updateOne(query, book)
+        if (!result) {
+          res.send("Could not update book")
+        } else {
+          res.redirect("/");
+        }
+    }
+  })
 
 module.exports = router;

@@ -43,22 +43,20 @@ router
       newUser.email = req.body.email;
 
       bcrypt.genSalt(10, function (err, salt) {
-        bcrypt.hash(req.body.password, salt, function (err, hashed_password) {
+        bcrypt.hash(req.body.password, salt, async function (err, hashed_password) {
           if (err) {
             console.log(err);
           } else {
             newUser.password = hashed_password;
             // Save new user to MongoDB
-            newUser.save(function (err) {
-              if (err) {
-                // Log error if failed
-                console.log(err);
-                return;
-              } else {
-                // Route to login if user created
-                res.redirect("/users/login");
-              }
-            });
+            let result = await newUser.save()
+            if (!result) {
+              // Log error if failed
+              res.send("Could not save user")
+            } else {
+              // Route to login if user created
+              res.redirect("/users/login");
+            }
           }
         });
       });
