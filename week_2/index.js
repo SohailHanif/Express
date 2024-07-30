@@ -4,6 +4,11 @@ const fs = require("fs");
 const Person = require("./person")
 
 const server = http.createServer((request, response) => {
+    if (path.normalize(decodeURI(request.url)) !== decodeURI(request.url)) {
+        response.statusCode = 403;
+        response.end();
+        return;
+    }
     console.log(request.url)
     let filePath = path.join(
         __dirname,
